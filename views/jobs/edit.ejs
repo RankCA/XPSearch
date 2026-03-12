@@ -1,64 +1,83 @@
 <%- include('../partials/header') %>
+
+<div class="xp-page-header">
+  <div class="container">
+    <a href="/jobs/<%= job.id %>" class="btn btn-outline-secondary btn-sm rounded-pill mb-2">
+      <i class="bi bi-arrow-left me-1"></i>Back to Listing
+    </a>
+    <h1 class="h3 fw-bold mb-0"><i class="bi bi-pencil me-2" style="color:var(--xp-amber)"></i>Edit Listing</h1>
+  </div>
+</div>
+
 <div class="container py-4">
   <div class="row justify-content-center">
     <div class="col-lg-8">
-      <div class="card shadow-sm border-0">
-        <div class="card-header bg-transparent py-3">
-          <h2 class="h4 fw-bold mb-0"><i class="bi bi-pencil me-2 text-warning"></i>Edit Job Listing</h2>
-        </div>
-        <div class="card-body p-4">
-          <% if (error) { %>
-            <div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %></div>
-          <% } %>
-          <form action="/jobs/<%= job.id %>?_method=PUT" method="POST">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Job Title <span class="text-danger">*</span></label>
+      <div class="xp-card p-4">
+        <% if (error) { %>
+          <div class="alert alert-danger py-2 small mb-4"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %></div>
+        <% } %>
+        <form action="/jobs/<%= job.id %>?_method=PUT" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-8">
+              <label class="form-label fw-600 small">Job Title <span class="text-danger">*</span></label>
               <input type="text" name="title" value="<%= job.title %>" class="form-control" required/>
             </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Location <span class="text-danger">*</span></label>
+            <div class="col-md-4">
+              <label class="form-label fw-600 small">Location <span class="text-danger">*</span></label>
               <input type="text" name="location" value="<%= job.location %>" class="form-control" required/>
             </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
-              <textarea name="description" class="form-control" rows="5" required><%= job.description %></textarea>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Requirements <span class="text-muted fw-normal">(optional)</span></label>
-              <textarea name="requirements" class="form-control" rows="3"><%= job.requirements || '' %></textarea>
-            </div>
-            <div class="mb-3">
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="isPaid" name="is_paid" value="1" <%= job.is_paid ? 'checked' : '' %> onchange="toggleSalary()"/>
-                <label class="form-check-label fw-semibold" for="isPaid">This is a paid opportunity</label>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-600 small">Description <span class="text-danger">*</span></label>
+            <textarea name="description" class="form-control" rows="5" required><%= job.description %></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-600 small">Requirements <span class="text-muted fw-normal">(optional)</span></label>
+            <textarea name="requirements" class="form-control" rows="3"><%= job.requirements || '' %></textarea>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-600 small">Compensation</label>
+              <div class="xp-card p-3">
+                <div class="form-check form-switch mb-2">
+                  <input class="form-check-input" type="checkbox" id="isPaid" name="is_paid" value="1"
+                    <%= job.is_paid ? 'checked' : '' %> onchange="toggleSalary()"/>
+                  <label class="form-check-label fw-600 small" for="isPaid">This is a paid opportunity</label>
+                </div>
+                <div id="salaryField" style="display:<%= job.is_paid ? 'block' : 'none' %>">
+                  <input type="text" name="salary" value="<%= job.salary || '' %>" class="form-control form-control-sm"
+                    placeholder="e.g. £10/hour, £200/week"/>
+                </div>
               </div>
             </div>
-            <div class="mb-3" id="salaryField" style="display: <%= job.is_paid ? 'block' : 'none' %>;">
-              <label class="form-label fw-semibold">Salary / Pay Rate</label>
-              <input type="text" name="salary" value="<%= job.salary || '' %>" class="form-control" placeholder="e.g. £10/hour, £200/week"/>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Application Deadline</label>
-              <input type="date" name="deadline" value="<%= job.deadline || '' %>" class="form-control"/>
-            </div>
-            <div class="mb-4">
-              <label class="form-label fw-semibold">Status</label>
+            <div class="col-md-6">
+              <label class="form-label fw-600 small">Application Deadline</label>
+              <input type="date" name="deadline" value="<%= job.deadline || '' %>" class="form-control mb-2"/>
+              <label class="form-label fw-600 small">Status</label>
               <select name="status" class="form-select">
-                <option value="open" <%= job.status === 'open' ? 'selected' : '' %>>Open - Accepting Applications</option>
-                <option value="closed" <%= job.status === 'closed' ? 'selected' : '' %>>Closed - No Longer Accepting</option>
+                <option value="open" <%= job.status === 'open' ? 'selected' : '' %>>✅ Open — Accepting Applications</option>
+                <option value="closed" <%= job.status === 'closed' ? 'selected' : '' %>>🔒 Closed — No Longer Accepting</option>
               </select>
             </div>
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-warning fw-semibold"><i class="bi bi-save me-2"></i>Save Changes</button>
-              <a href="/jobs/<%= job.id %>" class="btn btn-outline-secondary">Cancel</a>
-            </div>
-          </form>
-        </div>
+          </div>
+
+          <div class="d-flex gap-2 pt-2">
+            <button type="submit" class="btn btn-warning rounded-pill px-4 fw-600">
+              <i class="bi bi-save me-2"></i>Save Changes
+            </button>
+            <a href="/jobs/<%= job.id %>" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
+
 <script>
 function toggleSalary() {
   document.getElementById('salaryField').style.display = document.getElementById('isPaid').checked ? 'block' : 'none';

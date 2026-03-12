@@ -1,28 +1,36 @@
 <%- include('../partials/header') %>
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-5">
-      <div class="card shadow-sm border-0">
-        <div class="card-body p-4">
-          <h2 class="card-title text-center mb-4 fw-bold"><i class="bi bi-box-arrow-in-right me-2 text-primary"></i>Login</h2>
-          <% if (error) { %>
-            <div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %></div>
-          <% } %>
-          <form action="/auth/login" method="POST">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Email Address</label>
-              <input type="email" name="email" class="form-control" required autofocus placeholder="you@example.com"/>
-            </div>
-            <div class="mb-4">
-              <label class="form-label fw-semibold">Password</label>
-              <input type="password" name="password" class="form-control" required placeholder="Your password"/>
-            </div>
-            <button type="submit" class="btn btn-primary w-100 fw-semibold">Login</button>
-          </form>
-          <hr class="my-3"/>
-          <p class="text-center mb-0">Don't have an account? <a href="/auth/register">Register here</a></p>
-        </div>
+<div class="xp-auth-wrap">
+  <div class="container">
+    <div class="xp-auth-card">
+      <div class="text-center mb-4">
+        <a href="/" class="text-decoration-none">
+          <div class="fw-800 fs-4" style="color:var(--xp-primary);letter-spacing:-0.03em">
+            <i class="bi bi-briefcase-fill me-1"></i>XPSearch
+          </div>
+        </a>
+      </div>
+      <div class="xp-card p-4">
+        <h2 class="fw-bold text-center mb-1">Welcome back</h2>
+        <p class="text-muted text-center mb-4 small">Login to your account</p>
+        <% if (error) { %>
+          <div class="alert alert-danger py-2 small"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %></div>
+        <% } %>
+        <form action="/auth/login" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+          <div class="mb-3">
+            <label class="form-label fw-600 small">Email Address</label>
+            <input type="email" name="email" class="form-control" required autofocus autocomplete="email" placeholder="you@example.com"/>
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-600 small">Password</label>
+            <input type="password" name="password" class="form-control" required autocomplete="current-password" placeholder="Your password"/>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 fw-600 rounded-pill py-2">Login</button>
+        </form>
+        <hr class="my-3"/>
+        <p class="text-center text-muted small mb-0">
+          Don't have an account? <a href="/auth/register" class="fw-600">Create one free</a>
+        </p>
       </div>
     </div>
   </div>

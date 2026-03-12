@@ -1,0 +1,85 @@
+<%- include('partials/header') %>
+
+<div class="xp-page-header">
+  <div class="container">
+    <span class="xp-section-label d-block mb-1">Account</span>
+    <h1 class="h3 fw-bold mb-0">My Profile</h1>
+  </div>
+</div>
+
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+
+      <!-- Profile info card -->
+      <div class="xp-card p-4 mb-4">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 fw-800 text-white fs-3"
+               style="width:64px;height:64px;background:linear-gradient(135deg,var(--xp-primary),var(--xp-violet))">
+            <%= user.name.charAt(0).toUpperCase() %>
+          </div>
+          <div>
+            <div class="fw-700 fs-5"><%= user.name %></div>
+            <div class="text-muted small">
+              <% if (user.role === 'student') { %>
+                🎓 Year <%= profile.year_group %> Student
+              <% } else { %>
+                🏢 Employer &mdash; <%= profile.company_name %>
+              <% } %>
+            </div>
+            <div class="text-muted small"><i class="bi bi-envelope me-1"></i><%= profile.email %></div>
+          </div>
+        </div>
+
+        <!-- Update name -->
+        <h6 class="fw-700 mb-3 text-muted text-uppercase" style="font-size:.72rem;letter-spacing:.08em">Update Details</h6>
+        <% if (nameError) { %>
+          <div class="alert alert-danger py-2 small mb-3"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= nameError %></div>
+        <% } %>
+        <form action="/profile" method="POST" class="mb-0">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+          <input type="hidden" name="action" value="update_name"/>
+          <div class="row g-2 align-items-end">
+            <div class="col">
+              <label class="form-label fw-600 small">Display Name</label>
+              <input type="text" name="name" value="<%= profile.name %>" class="form-control" required autocomplete="name"/>
+            </div>
+            <% if (user.role === 'employer') { %>
+            <div class="col">
+              <label class="form-label fw-600 small">Company Name</label>
+              <input type="text" name="company_name" value="<%= profile.company_name || '' %>" class="form-control" autocomplete="organization"/>
+            </div>
+            <% } %>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary rounded-pill px-3">Save</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Change password -->
+      <div class="xp-card p-4">
+        <h6 class="fw-700 mb-3 text-muted text-uppercase" style="font-size:.72rem;letter-spacing:.08em">Change Password</h6>
+        <% if (pwError) { %>
+          <div class="alert alert-danger py-2 small mb-3"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= pwError %></div>
+        <% } %>
+        <form action="/profile" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+          <input type="hidden" name="action" value="change_password"/>
+          <div class="mb-3">
+            <label class="form-label fw-600 small">Current Password</label>
+            <input type="password" name="current_password" class="form-control" required autocomplete="current-password"/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-600 small">New Password</label>
+            <input type="password" name="new_password" class="form-control" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"/>
+          </div>
+          <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Update Password</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
