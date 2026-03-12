@@ -48,7 +48,7 @@ const generalLimiter = rateLimit({
 
 const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
   getSecret: () => 'xpsearch-csrf-secret-change-in-production',
-  getSessionIdentifier: (req) => req.sessionID || '',
+  getSessionIdentifier: (req) => req.session.csrfId || '',
   cookieName: 'xpsearch.csrf-token',
   cookieOptions: {
     sameSite: 'lax',
@@ -58,6 +58,17 @@ const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
   size: 64,
   getCsrfTokenFromRequest: (req) => req.body._csrf || req.headers['x-csrf-token']
 });
+
+// Ensure every session has a stable CSRF identifier so the double-submit
+// cookie pattern can bind the token to the session.
+app.use((req, res, next) => {
+  if (!req.session.csrfId) {
+    req.session.csrfId = require('crypto').randomBytes(16).toString('hex');
+  }
+  next();
+});
+
+app.use(doubleCsrfProtection);
 
 app.use((req, res, next) => {
   res.locals.user = req.session.userId ? {
@@ -71,8 +82,6 @@ app.use((req, res, next) => {
   res.locals.csrfToken = generateCsrfToken(req, res);
   next();
 });
-
-app.use(doubleCsrfProtection);
 
 app.use('/auth', authLimiter, require('./routes/auth'));
 app.use('/jobs', generalLimiter, require('./routes/jobs'));
@@ -135,6 +144,10 @@ app.get('/dashboard', generalLimiter, requireAuth, (req, res) => {
 });
 
 app.use((err, req, res, next) => {
+  // Ensure view locals are populated even if the locals middleware hasn't run
+  if (!res.locals.user) res.locals.user = null;
+  if (!res.locals.flash) res.locals.flash = {};
+  if (!res.locals.csrfToken) res.locals.csrfToken = '';
   if (err.code === 'EBADCSRFTOKEN') {
     return res.status(403).render('error', { message: 'Invalid or missing CSRF token. Please go back and try again.' });
   }
@@ -143,6 +156,9 @@ app.use((err, req, res, next) => {
 });
 
 app.use((req, res) => {
+  if (!res.locals.user) res.locals.user = null;
+  if (!res.locals.flash) res.locals.flash = {};
+  if (!res.locals.csrfToken) res.locals.csrfToken = '';
   res.status(404).render('error', { message: 'Page not found.' });
 });
 
