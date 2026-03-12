@@ -113,7 +113,11 @@
                         <strong class="fw-600"><%= app.student_name %></strong>
                         <span class="badge bg-light text-dark border" style="font-size:.7rem">Year <%= app.year_group %></span>
                       </div>
-                      <p class="mb-1 small text-muted"><i class="bi bi-envelope me-1"></i><%= app.student_email %></p>
+                      <% if (app.status === 'accepted') { %>
+                        <p class="mb-1 small text-muted"><i class="bi bi-envelope me-1"></i><%= app.student_email %></p>
+                      <% } else { %>
+                        <p class="mb-1 small text-muted fst-italic"><i class="bi bi-shield-lock me-1"></i>Email visible after accepting</p>
+                      <% } %>
                       <% if (app.cover_letter) { %>
                         <p class="mb-1 small text-muted fst-italic lh-base">
                           "<%= app.cover_letter.substring(0, 180) %><%= app.cover_letter.length > 180 ? '…' : '' %>"

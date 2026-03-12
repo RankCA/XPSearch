@@ -101,6 +101,10 @@ app.get('/about', generalLimiter, (req, res) => {
   res.render('about');
 });
 
+app.get('/privacy', generalLimiter, (req, res) => {
+  res.render('privacy');
+});
+
 app.get('/', generalLimiter, (req, res) => {
   const db = require('./db/database');
   const keyword = req.query.keyword || '';

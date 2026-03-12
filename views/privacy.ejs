@@ -1,0 +1,145 @@
+<%- include('partials/header') %>
+
+<div class="xp-page-header">
+  <div class="container">
+    <span class="xp-section-label d-block mb-1">Legal</span>
+    <h1 class="h3 fw-bold mb-0">Privacy Policy</h1>
+  </div>
+</div>
+
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="xp-card p-4 mb-4">
+
+        <p class="text-muted small mb-4">Last updated: 1 January 2025</p>
+
+        <h5 class="fw-700 mb-2">1. Who we are</h5>
+        <p class="text-muted lh-lg">
+          XPSearch is a free platform connecting Year&nbsp;12 and Year&nbsp;13 A-Level students (typically aged 16&ndash;18)
+          with employers offering work experience opportunities across the UK. References to &ldquo;we&rdquo;,
+          &ldquo;us&rdquo; or &ldquo;our&rdquo; mean the XPSearch platform operators.
+        </p>
+
+        <h5 class="fw-700 mb-2 mt-4">2. Our commitment to young people&rsquo;s data</h5>
+        <p class="text-muted lh-lg">
+          Many of our users are under&nbsp;18. We take this responsibility seriously and comply with the
+          <strong>UK General Data Protection Regulation (UK&nbsp;GDPR)</strong> and the
+          <strong>Data Protection Act&nbsp;2018</strong>, including the provisions relating to children&rsquo;s data.
+          We follow the ICO&rsquo;s <em>Age Appropriate Design Code</em> principles where applicable.
+        </p>
+
+        <h5 class="fw-700 mb-2 mt-4">3. What data we collect</h5>
+        <p class="text-muted lh-lg">We only collect the minimum information needed to run the platform:</p>
+        <div class="table-responsive">
+          <table class="table table-sm text-muted small">
+            <thead class="table-light">
+              <tr><th>Data</th><th>Who provides it</th><th>Why we need it</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Full name</td><td>All users</td><td>To identify you on the platform</td></tr>
+              <tr><td>Email address</td><td>All users</td><td>Account login; employers contact accepted applicants</td></tr>
+              <tr><td>Password (hashed)</td><td>All users</td><td>Secure account access &mdash; stored using bcrypt, never in plain text</td></tr>
+              <tr><td>Year group (12 or 13)</td><td>Students</td><td>To match you with appropriate opportunities</td></tr>
+              <tr><td>Company name</td><td>Employers</td><td>To display alongside job listings</td></tr>
+              <tr><td>Cover letters</td><td>Students</td><td>Submitted voluntarily when applying for a role</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-muted lh-lg">
+          We do <strong>not</strong> collect date of birth, home address, phone number, school name,
+          photographs, or any special-category data.
+        </p>
+
+        <h5 class="fw-700 mb-2 mt-4">4. Lawful basis for processing</h5>
+        <p class="text-muted lh-lg">
+          We process personal data on the basis of <strong>consent</strong> (Article&nbsp;6(1)(a) UK&nbsp;GDPR).
+          When you register, you explicitly consent to us processing your data for the purposes described in this policy.
+          You may withdraw consent at any time by deleting your account (see Section&nbsp;8).
+        </p>
+
+        <h5 class="fw-700 mb-2 mt-4">5. How we protect student data</h5>
+        <ul class="text-muted lh-lg">
+          <li class="mb-2">
+            <strong>Email addresses are hidden</strong> &mdash; an employer can only see a student&rsquo;s email
+            address after they have <em>accepted</em> the student&rsquo;s application. This prevents unnecessary
+            disclosure of minors&rsquo; contact information.
+          </li>
+          <li class="mb-2">
+            <strong>Passwords are hashed</strong> using bcrypt and are never stored or transmitted in plain text.
+          </li>
+          <li class="mb-2">
+            <strong>CSRF protection</strong> prevents cross-site request forgery attacks on all forms.
+          </li>
+          <li class="mb-2">
+            <strong>Rate limiting</strong> protects against brute-force login attempts.
+          </li>
+          <li class="mb-2">
+            <strong>Session cookies</strong> are httpOnly and use the SameSite attribute to prevent cross-site misuse.
+          </li>
+          <li class="mb-2">
+            <strong>No tracking</strong> &mdash; we do not use analytics, advertising cookies, or third-party trackers.
+          </li>
+        </ul>
+
+        <h5 class="fw-700 mb-2 mt-4">6. Who can see your data</h5>
+        <div class="table-responsive">
+          <table class="table table-sm text-muted small">
+            <thead class="table-light">
+              <tr><th>Your data</th><th>Who can see it</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Name &amp; year group</td><td>Employers you apply to</td></tr>
+              <tr><td>Email address (students)</td><td>Only employers who <strong>accept</strong> your application</td></tr>
+              <tr><td>Cover letter</td><td>The employer for the role you applied to</td></tr>
+              <tr><td>Company name (employers)</td><td>All visitors (shown on job listings)</td></tr>
+              <tr><td>Password</td><td>Nobody &mdash; stored as an irreversible hash</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-muted lh-lg">
+          We do <strong>not</strong> sell, share, or transfer personal data to any third parties.
+        </p>
+
+        <h5 class="fw-700 mb-2 mt-4">7. Data retention</h5>
+        <p class="text-muted lh-lg">
+          We keep your data for as long as your account exists. If you delete your account (see below),
+          all of your personal data is permanently removed from our database immediately.
+        </p>
+
+        <h5 class="fw-700 mb-2 mt-4">8. Your rights</h5>
+        <p class="text-muted lh-lg">Under UK&nbsp;GDPR you have the right to:</p>
+        <ul class="text-muted lh-lg">
+          <li class="mb-2"><strong>Access</strong> your personal data &mdash; visible on your <a href="/profile">Profile</a> page.</li>
+          <li class="mb-2"><strong>Rectify</strong> inaccurate data &mdash; you can update your name, company, and password on your Profile page.</li>
+          <li class="mb-2"><strong>Erase</strong> your data (&ldquo;right to be forgotten&rdquo;) &mdash; use the <strong>Delete Account</strong> option on your Profile page. This permanently deletes your account, applications, job listings, and all associated data.</li>
+          <li class="mb-2"><strong>Withdraw consent</strong> &mdash; you can stop us processing your data at any time by deleting your account.</li>
+        </ul>
+
+        <h5 class="fw-700 mb-2 mt-4">9. Parental / guardian information</h5>
+        <p class="text-muted lh-lg">
+          Under UK law the age of consent for data processing is <strong>13</strong>. Our users are aged 16&ndash;18,
+          so parental consent is not legally required. However, we encourage students to inform a parent or guardian
+          that they are using XPSearch. During registration, students confirm that they are aged 16 or over and that
+          a parent or guardian is aware they are using the platform.
+        </p>
+
+        <h5 class="fw-700 mb-2 mt-4">10. Cookies</h5>
+        <p class="text-muted lh-lg">
+          We use only <strong>strictly necessary cookies</strong> for session management and CSRF protection.
+          We do not use advertising, analytics, or preference cookies. Because these cookies are essential
+          for the site to function, separate cookie consent is not required under UK&nbsp;GDPR.
+        </p>
+
+        <h5 class="fw-700 mb-2 mt-4">11. Changes to this policy</h5>
+        <p class="text-muted lh-lg">
+          If we make material changes to this policy, we will update the &ldquo;last updated&rdquo; date at the top
+          of this page. We encourage you to review this policy periodically.
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

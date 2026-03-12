@@ -69,6 +69,26 @@
             <input type="text" name="company_name" value="<%= formData.company_name || '' %>" class="form-control" autocomplete="organization" placeholder="Your company name"/>
           </div>
 
+          <!-- Student age & parental awareness confirmation -->
+          <div id="ageConfirm" class="mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="confirmAge" name="confirm_age" value="1" required/>
+              <label class="form-check-label small text-muted" for="confirmAge">
+                I confirm I am aged <strong>16 or over</strong> and that a parent or guardian is aware I am using this platform.
+              </label>
+            </div>
+          </div>
+
+          <!-- Data consent -->
+          <div class="mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="consentData" name="consent_data" value="1" required/>
+              <label class="form-check-label small text-muted" for="consentData">
+                I agree to the <a href="/privacy" target="_blank">Privacy Policy</a> and consent to XPSearch processing my data as described.
+              </label>
+            </div>
+          </div>
+
           <button type="submit" class="btn btn-primary w-100 fw-600 rounded-pill py-2">Create Account — It's Free</button>
         </form>
         <hr class="my-3"/>
@@ -89,6 +109,8 @@ function toggleRoleFields() {
   const isEmployer = document.getElementById('roleEmployer').checked;
   document.getElementById('studentFields').style.display = isEmployer ? 'none' : 'block';
   document.getElementById('employerFields').style.display = isEmployer ? 'block' : 'none';
+  document.getElementById('ageConfirm').style.display = isEmployer ? 'none' : 'block';
+  document.getElementById('confirmAge').required = !isEmployer;
 }
 <% if (formData.role === 'employer') { %>toggleRoleFields();<% } %>
 </script>
