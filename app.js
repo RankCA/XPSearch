@@ -3,6 +3,7 @@ const session = require('express-session');
 const methodOverride = require('method-override');
 const path = require('path');
 const SqliteStore = require('connect-sqlite3')(session);
+const rateLimit = require('express-rate-limit');
 const { requireAuth } = require('./middleware/auth');
 
 const app = express();
@@ -19,8 +20,28 @@ app.use(session({
   secret: 'xpsearch-secret-key-change-in-production',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 }
+  cookie: {
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax'
+  }
 }));
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many requests, please try again later.'
+});
+
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false
+});
 
 app.use((req, res, next) => {
   res.locals.user = req.session.userId ? {
@@ -34,11 +55,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/auth', require('./routes/auth'));
-app.use('/jobs', require('./routes/jobs'));
-app.use('/applications', require('./routes/applications'));
+app.use('/auth', authLimiter, require('./routes/auth'));
+app.use('/jobs', generalLimiter, require('./routes/jobs'));
+app.use('/applications', generalLimiter, require('./routes/applications'));
 
-app.get('/', (req, res) => {
+app.get('/', generalLimiter, (req, res) => {
   const db = require('./db/database');
   const keyword = req.query.keyword || '';
   const paid = req.query.paid || '';
@@ -69,7 +90,7 @@ app.get('/', (req, res) => {
   res.render('index', { jobs, keyword, paid });
 });
 
-app.get('/dashboard', requireAuth, (req, res) => {
+app.get('/dashboard', generalLimiter, requireAuth, (req, res) => {
   const db = require('./db/database');
   if (req.session.userRole === 'student') {
     const applications = db.prepare(`
