@@ -1,0 +1,68 @@
+<%- include('../partials/header') %>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h2 class="card-title text-center mb-4 fw-bold"><i class="bi bi-person-plus-fill me-2 text-primary"></i>Create Account</h2>
+          <% if (error) { %>
+            <div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %></div>
+          <% } %>
+          <form action="/auth/register" method="POST" id="registerForm">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Full Name</label>
+              <input type="text" name="name" value="<%= formData.name || '' %>" class="form-control" required placeholder="Your full name"/>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email Address</label>
+              <input type="email" name="email" value="<%= formData.email || '' %>" class="form-control" required placeholder="you@example.com"/>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Password</label>
+              <input type="password" name="password" class="form-control" required placeholder="At least 8 characters" minlength="8"/>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">I am a...</label>
+              <div class="d-flex gap-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="role" id="roleStudent" value="student" <%= formData.role === 'student' || !formData.role ? 'checked' : '' %> onchange="toggleRoleFields()"/>
+                  <label class="form-check-label" for="roleStudent"><i class="bi bi-mortarboard me-1"></i>Student</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="role" id="roleEmployer" value="employer" <%= formData.role === 'employer' ? 'checked' : '' %> onchange="toggleRoleFields()"/>
+                  <label class="form-check-label" for="roleEmployer"><i class="bi bi-building me-1"></i>Employer</label>
+                </div>
+              </div>
+            </div>
+            <div id="studentFields" class="mb-3">
+              <label class="form-label fw-semibold">Year Group</label>
+              <select name="year_group" class="form-select">
+                <option value="">Select year group...</option>
+                <option value="12" <%= formData.year_group === '12' ? 'selected' : '' %>>Year 12</option>
+                <option value="13" <%= formData.year_group === '13' ? 'selected' : '' %>>Year 13</option>
+              </select>
+            </div>
+            <div id="employerFields" class="mb-3" style="display:none;">
+              <label class="form-label fw-semibold">Company Name</label>
+              <input type="text" name="company_name" value="<%= formData.company_name || '' %>" class="form-control" placeholder="Your company name"/>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 fw-semibold">Create Account</button>
+          </form>
+          <hr class="my-3"/>
+          <p class="text-center mb-0">Already have an account? <a href="/auth/login">Login here</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function toggleRoleFields() {
+  const isEmployer = document.getElementById('roleEmployer').checked;
+  document.getElementById('studentFields').style.display = isEmployer ? 'none' : 'block';
+  document.getElementById('employerFields').style.display = isEmployer ? 'block' : 'none';
+}
+<% if (formData.role === 'employer') { %>
+toggleRoleFields();
+<% } %>
+</script>
+<%- include('../partials/footer') %>

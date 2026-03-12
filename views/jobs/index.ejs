@@ -1,0 +1,70 @@
+<%- include('../partials/header') %>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold mb-0"><i class="bi bi-briefcase me-2 text-primary"></i>Browse Opportunities</h1>
+    <% if (user && user.role === 'employer') { %>
+      <a href="/jobs/new" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Post a Job</a>
+    <% } %>
+  </div>
+
+  <div class="card shadow-sm mb-4 border-0">
+    <div class="card-body">
+      <form action="/jobs" method="GET" class="row g-3 align-items-end">
+        <div class="col-md-6">
+          <input type="text" name="keyword" value="<%= keyword %>" class="form-control" placeholder="Search by title, company, or keyword..."/>
+        </div>
+        <div class="col-md-3">
+          <select name="paid" class="form-select">
+            <option value="">All Types</option>
+            <option value="1" <%= paid === '1' ? 'selected' : '' %>>Paid Only</option>
+            <option value="0" <%= paid === '0' ? 'selected' : '' %>>Unpaid Only</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>
+        </div>
+        <div class="col-md-1">
+          <a href="/jobs" class="btn btn-outline-secondary w-100" title="Clear filters"><i class="bi bi-x-circle"></i></a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <% if (jobs.length === 0) { %>
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-inbox display-1 d-block mb-3"></i>
+      <h4>No opportunities found</h4>
+      <p>Try adjusting your search filters.</p>
+    </div>
+  <% } else { %>
+    <p class="text-muted mb-3"><%= jobs.length %> opportunit<%= jobs.length !== 1 ? 'ies' : 'y' %> found</p>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <% jobs.forEach(job => { %>
+        <div class="col">
+          <div class="card h-100 shadow-sm job-card border-0">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title mb-0"><%= job.title %></h5>
+                <span class="badge <%= job.is_paid ? 'bg-success' : 'bg-secondary' %> ms-2 flex-shrink-0">
+                  <%= job.is_paid ? 'Paid' : 'Unpaid' %>
+                </span>
+              </div>
+              <p class="text-muted small mb-1"><i class="bi bi-building me-1"></i><strong><%= job.company_name || job.employer_name %></strong></p>
+              <p class="text-muted small mb-2"><i class="bi bi-geo-alt me-1"></i><%= job.location %></p>
+              <% if (job.salary) { %><p class="text-success small mb-2"><i class="bi bi-currency-pound me-1"></i><%= job.salary %></p><% } %>
+              <p class="card-text text-muted small"><%= job.description.substring(0, 100) %><%= job.description.length > 100 ? '...' : '' %></p>
+            </div>
+            <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center pb-0">
+              <small class="text-muted"><i class="bi bi-people me-1"></i><%= job.apply_count %> applicant<%= job.apply_count !== 1 ? 's' : '' %></small>
+              <% if (job.deadline) { %><small class="text-muted"><i class="bi bi-calendar me-1"></i><%= job.deadline %></small><% } %>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-2">
+              <a href="/jobs/<%= job.id %>" class="btn btn-primary btn-sm w-100">View Details</a>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,167 @@
+<%- include('../partials/header') %>
+<div class="container py-4">
+  <a href="/jobs" class="btn btn-outline-secondary btn-sm mb-3"><i class="bi bi-arrow-left me-1"></i>Back to Jobs</a>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <h1 class="h2 fw-bold mb-1"><%= job.title %></h1>
+              <p class="text-muted mb-0"><i class="bi bi-building me-1"></i><strong><%= job.company_name || job.employer_name %></strong></p>
+            </div>
+            <div class="d-flex flex-column align-items-end gap-2">
+              <span class="badge fs-6 <%= job.is_paid ? 'bg-success' : 'bg-secondary' %>"><%= job.is_paid ? 'Paid' : 'Unpaid' %></span>
+              <span class="badge <%= job.status === 'open' ? 'bg-primary' : 'bg-danger' %>"><%= job.status === 'open' ? 'Accepting Applications' : 'Closed' %></span>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-geo-alt-fill text-primary fs-5"></i>
+                <div>
+                  <small class="text-muted d-block">Location</small>
+                  <strong><%= job.location %></strong>
+                </div>
+              </div>
+            </div>
+            <% if (job.salary) { %>
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-cash-stack text-success fs-5"></i>
+                <div>
+                  <small class="text-muted d-block">Salary</small>
+                  <strong class="text-success"><%= job.salary %></strong>
+                </div>
+              </div>
+            </div>
+            <% } %>
+            <% if (job.deadline) { %>
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-calendar-event text-danger fs-5"></i>
+                <div>
+                  <small class="text-muted d-block">Application Deadline</small>
+                  <strong><%= job.deadline %></strong>
+                </div>
+              </div>
+            </div>
+            <% } %>
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-clock text-muted fs-5"></i>
+                <div>
+                  <small class="text-muted d-block">Posted</small>
+                  <strong><%= new Date(job.created_at).toLocaleDateString('en-GB') %></strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h5 class="fw-bold mb-2">Description</h5>
+          <p class="text-muted" style="white-space: pre-wrap;"><%= job.description %></p>
+
+          <% if (job.requirements) { %>
+            <h5 class="fw-bold mb-2 mt-4">Requirements</h5>
+            <p class="text-muted" style="white-space: pre-wrap;"><%= job.requirements %></p>
+          <% } %>
+        </div>
+      </div>
+
+      <% if (user && user.role === 'employer' && user.id === job.employer_id) { %>
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-transparent fw-bold">
+            <i class="bi bi-people me-2"></i>Applications (<%= applications.length %>)
+          </div>
+          <div class="card-body p-0">
+            <% if (applications.length === 0) { %>
+              <p class="text-muted text-center py-4 mb-0">No applications yet.</p>
+            <% } else { %>
+              <div class="list-group list-group-flush">
+                <% applications.forEach(app => { %>
+                  <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div>
+                        <strong><%= app.student_name %></strong>
+                        <span class="badge bg-light text-dark ms-2">Year <%= app.year_group %></span>
+                        <p class="mb-1 small text-muted"><i class="bi bi-envelope me-1"></i><%= app.student_email %></p>
+                        <% if (app.cover_letter) { %>
+                          <p class="mb-1 small text-muted fst-italic">"<%= app.cover_letter.substring(0, 150) %><%= app.cover_letter.length > 150 ? '...' : '' %>"</p>
+                        <% } %>
+                        <small class="text-muted">Applied: <%= new Date(app.created_at).toLocaleDateString('en-GB') %></small>
+                      </div>
+                      <div class="d-flex flex-column gap-2 align-items-end ms-3">
+                        <span class="badge <%= app.status === 'pending' ? 'bg-warning text-dark' : app.status === 'accepted' ? 'bg-success' : 'bg-danger' %>">
+                          <%= app.status.charAt(0).toUpperCase() + app.status.slice(1) %>
+                        </span>
+                        <% if (app.status === 'pending') { %>
+                          <div class="d-flex gap-1">
+                            <form action="/applications/<%= app.id %>/status" method="POST">
+                              <input type="hidden" name="status" value="accepted"/>
+                              <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check-lg"></i> Accept</button>
+                            </form>
+                            <form action="/applications/<%= app.id %>/status" method="POST">
+                              <input type="hidden" name="status" value="rejected"/>
+                              <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-x-lg"></i> Reject</button>
+                            </form>
+                          </div>
+                        <% } %>
+                      </div>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card shadow-sm border-0 sticky-top" style="top: 1rem;">
+        <div class="card-body p-4">
+          <% if (!user) { %>
+            <h5 class="fw-bold mb-3">Interested in this role?</h5>
+            <p class="text-muted small">Create a student account to apply for this opportunity.</p>
+            <a href="/auth/register" class="btn btn-primary w-100 mb-2">Register to Apply</a>
+            <a href="/auth/login" class="btn btn-outline-primary w-100">Login</a>
+          <% } else if (user.role === 'student') { %>
+            <% if (job.status !== 'open') { %>
+              <div class="alert alert-secondary mb-0"><i class="bi bi-lock me-2"></i>This job is no longer accepting applications.</div>
+            <% } else if (application) { %>
+              <div class="alert alert-info mb-3">
+                <i class="bi bi-check-circle-fill me-2"></i>You've already applied!
+              </div>
+              <p class="text-muted small mb-0">Application status:
+                <span class="fw-bold <%= application.status === 'pending' ? 'text-warning' : application.status === 'accepted' ? 'text-success' : 'text-danger' %>">
+                  <%= application.status.charAt(0).toUpperCase() + application.status.slice(1) %>
+                </span>
+              </p>
+            <% } else { %>
+              <h5 class="fw-bold mb-3">Apply Now</h5>
+              <form action="/applications" method="POST">
+                <input type="hidden" name="job_id" value="<%= job.id %>"/>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Cover Letter <span class="text-muted fw-normal">(optional)</span></label>
+                  <textarea name="cover_letter" class="form-control" rows="5" placeholder="Tell the employer why you're interested and what makes you a great candidate..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 fw-semibold"><i class="bi bi-send me-2"></i>Submit Application</button>
+              </form>
+            <% } %>
+          <% } else if (user.role === 'employer' && user.id === job.employer_id) { %>
+            <h5 class="fw-bold mb-3">Manage This Listing</h5>
+            <a href="/jobs/<%= job.id %>/edit" class="btn btn-warning w-100 mb-2"><i class="bi bi-pencil me-2"></i>Edit Job</a>
+            <form action="/jobs/<%= job.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this job listing?');">
+              <button type="submit" class="btn btn-danger w-100"><i class="bi bi-trash me-2"></i>Delete Listing</button>
+            </form>
+          <% } else if (user.role === 'employer') { %>
+            <div class="alert alert-info mb-0"><i class="bi bi-info-circle me-2"></i>Switch to a student account to apply.</div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

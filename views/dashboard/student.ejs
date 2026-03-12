@@ -1,0 +1,63 @@
+<%- include('../partials/header') %>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 fw-bold mb-1"><i class="bi bi-mortarboard me-2 text-primary"></i>Student Dashboard</h1>
+      <p class="text-muted mb-0">Welcome back, <%= user.name %>!</p>
+    </div>
+    <a href="/jobs" class="btn btn-primary"><i class="bi bi-search me-2"></i>Browse More Jobs</a>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-transparent py-3">
+      <h5 class="mb-0 fw-bold"><i class="bi bi-file-earmark-text me-2"></i>My Applications (<%= applications.length %>)</h5>
+    </div>
+    <div class="card-body p-0">
+      <% if (applications.length === 0) { %>
+        <div class="text-center py-5 text-muted">
+          <i class="bi bi-inbox display-4 d-block mb-3"></i>
+          <h5>No applications yet</h5>
+          <p>Start browsing and apply to work experience opportunities!</p>
+          <a href="/jobs" class="btn btn-primary">Browse Opportunities</a>
+        </div>
+      <% } else { %>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Role</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Applied</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% applications.forEach(app => { %>
+                <tr>
+                  <td class="fw-semibold"><%= app.job_title %></td>
+                  <td><%= app.company_name %></td>
+                  <td><small><%= app.location %></small></td>
+                  <td><span class="badge <%= app.is_paid ? 'bg-success' : 'bg-secondary' %>"><%= app.is_paid ? 'Paid' : 'Unpaid' %></span></td>
+                  <td>
+                    <span class="badge <%= app.status === 'pending' ? 'bg-warning text-dark' : app.status === 'accepted' ? 'bg-success' : 'bg-danger' %>">
+                      <% if (app.status === 'pending') { %><i class="bi bi-hourglass-split me-1"></i><% } %>
+                      <% if (app.status === 'accepted') { %><i class="bi bi-check-circle me-1"></i><% } %>
+                      <% if (app.status === 'rejected') { %><i class="bi bi-x-circle me-1"></i><% } %>
+                      <%= app.status.charAt(0).toUpperCase() + app.status.slice(1) %>
+                    </span>
+                  </td>
+                  <td><small class="text-muted"><%= new Date(app.created_at).toLocaleDateString('en-GB') %></small></td>
+                  <td><a href="/jobs/<%= app.job_id %>" class="btn btn-outline-primary btn-sm">View</a></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>
