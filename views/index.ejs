@@ -1,0 +1,222 @@
+<%- include('partials/header') %>
+
+<!-- ===== Hero ===== -->
+<section class="xp-hero text-white position-relative">
+  <div class="container position-relative text-center py-2" style="color:#fff">
+    <span class="xp-section-label d-block mb-3" style="color:rgba(255,255,255,.75)">Free for students &amp; employers</span>
+    <h1 class="display-4 fw-bold mb-3" style="letter-spacing:-0.03em;color:#fff">
+      Find Your Perfect<br>
+      <span style="color:#c7d2fe">Work Experience</span>
+    </h1>
+    <p class="lead mb-5 mx-auto" style="max-width:540px;color:rgba(255,255,255,.88)">
+      XPSearch connects Year 12 &amp; 13 A-Level students with exciting paid and unpaid work experience opportunities at leading companies.
+    </p>
+    <div class="d-flex flex-wrap gap-3 justify-content-center">
+      <% if (!user) { %>
+        <a href="/auth/register?role=student" class="btn btn-light btn-lg fw-600 px-4 rounded-pill shadow-sm">
+          <i class="bi bi-mortarboard me-2"></i>I'm a Student
+        </a>
+        <a href="/auth/register?role=employer" class="btn btn-outline-light btn-lg fw-600 px-4 rounded-pill">
+          <i class="bi bi-building me-2"></i>I'm an Employer
+        </a>
+      <% } else { %>
+        <a href="/jobs" class="btn btn-light btn-lg fw-600 px-4 rounded-pill shadow-sm">
+          <i class="bi bi-search me-2"></i>Browse Opportunities
+        </a>
+        <a href="/dashboard" class="btn btn-outline-light btn-lg fw-600 px-4 rounded-pill">
+          <i class="bi bi-speedometer2 me-2"></i>My Dashboard
+        </a>
+      <% } %>
+    </div>
+  </div>
+  <!-- Wave divider -->
+  <div class="xp-hero-wave">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,30 C300,60 900,0 1200,30 L1200,60 L0,60 Z" fill="#f8fafc"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ===== Quick search bar ===== -->
+<div class="container" style="margin-top:-1.5rem;position:relative;z-index:10">
+  <div class="xp-card p-3 shadow">
+    <form action="/" method="GET" class="row g-2 align-items-center">
+      <div class="col-md-6">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+          <input type="text" name="keyword" value="<%= keyword %>" class="form-control border-start-0 ps-0" placeholder="Search by job title, company, or keyword..."/>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <select name="paid" class="form-select">
+          <option value="">All Types</option>
+          <option value="1" <%= paid === '1' ? 'selected' : '' %>>💰 Paid Only</option>
+          <option value="0" <%= paid === '0' ? 'selected' : '' %>>🤝 Unpaid Only</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-fill fw-600"><i class="bi bi-search me-1"></i>Search</button>
+        <% if (keyword || paid) { %>
+          <a href="/" class="btn btn-outline-secondary px-3" title="Clear filters"><i class="bi bi-x-lg"></i></a>
+        <% } %>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== Job listings ===== -->
+<div class="container mt-5 mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <span class="xp-section-label d-block mb-1">Opportunities</span>
+      <h2 class="h4 fw-bold mb-0">
+        <% if (keyword || paid) { %>Latest Matching Roles<% } else { %>Recent Opportunities<% } %>
+      </h2>
+    </div>
+    <a href="/jobs" class="btn btn-outline-primary btn-sm rounded-pill px-3">View all <i class="bi bi-arrow-right ms-1"></i></a>
+  </div>
+
+  <% if (jobs.length === 0) { %>
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-inbox display-1 d-block mb-3 opacity-25"></i>
+      <h5 class="fw-semibold">No opportunities found</h5>
+      <p class="small">Try a different keyword or remove your filters.</p>
+      <% if (keyword || paid) { %>
+        <a href="/" class="btn btn-outline-primary btn-sm rounded-pill">Clear search</a>
+      <% } %>
+    </div>
+  <% } else { %>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <% jobs.forEach(job => { %>
+        <div class="col">
+          <div class="xp-card xp-card-hover h-100 d-flex flex-column">
+            <div class="p-4 flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <span class="xp-badge <%= job.is_paid ? 'xp-badge-paid' : 'xp-badge-unpaid' %>">
+                  <i class="bi <%= job.is_paid ? 'bi-currency-pound' : 'bi-heart' %>"></i>
+                  <%= job.is_paid ? 'Paid' : 'Unpaid' %>
+                </span>
+                <% if (job.deadline) { %>
+                  <small class="text-muted"><i class="bi bi-calendar3 me-1"></i><%= job.deadline %></small>
+                <% } %>
+              </div>
+              <h5 class="fw-700 mb-1" style="line-height:1.3"><%= job.title %></h5>
+              <p class="text-muted small mb-1 fw-500">
+                <i class="bi bi-building me-1"></i><%= job.company_name || job.employer_name %>
+              </p>
+              <p class="text-muted small mb-3">
+                <i class="bi bi-geo-alt me-1"></i><%= job.location %>
+              </p>
+              <% if (job.salary) { %>
+                <p class="small fw-600 mb-3" style="color:var(--xp-green)">
+                  <i class="bi bi-currency-pound me-1"></i><%= job.salary %>
+                </p>
+              <% } %>
+              <p class="text-muted small mb-0 lh-base">
+                <%= job.description.substring(0, 110) %><%= job.description.length > 110 ? '…' : '' %>
+              </p>
+            </div>
+            <div class="px-4 pb-4 pt-2 border-top d-flex justify-content-between align-items-center">
+              <small class="text-muted"><i class="bi bi-people me-1"></i><%= job.apply_count %> applicant<%= job.apply_count !== 1 ? 's' : '' %></small>
+              <a href="/jobs/<%= job.id %>" class="btn btn-primary btn-sm rounded-pill px-3">
+                View <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+    <div class="text-center mt-4">
+      <a href="/jobs" class="btn btn-outline-primary rounded-pill px-4">View All Opportunities <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+  <% } %>
+</div>
+
+<!-- ===== How it works ===== -->
+<section class="py-5 mt-2" style="background:#fff;border-top:1px solid var(--xp-slate-200);border-bottom:1px solid var(--xp-slate-200)">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="xp-section-label d-block mb-2">Simple process</span>
+      <h2 class="fw-bold">How XPSearch Works</h2>
+      <p class="text-muted mx-auto" style="max-width:480px">Getting started takes less than two minutes — whether you're a student or an employer.</p>
+    </div>
+    <div class="row g-4">
+      <!-- Students -->
+      <div class="col-md-6">
+        <h5 class="fw-700 mb-4 d-flex align-items-center gap-2">
+          <span class="badge bg-indigo-soft text-indigo px-3 py-2 rounded-pill fw-700">🎓 Students</span>
+        </h5>
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex align-items-start gap-3">
+            <div class="xp-step-number flex-shrink-0">1</div>
+            <div>
+              <div class="fw-600 mb-1">Create a free account</div>
+              <p class="text-muted small mb-0">Register as a Year 12 or Year 13 student in seconds — no CV needed.</p>
+            </div>
+          </div>
+          <div class="d-flex align-items-start gap-3">
+            <div class="xp-step-number flex-shrink-0">2</div>
+            <div>
+              <div class="fw-600 mb-1">Browse opportunities</div>
+              <p class="text-muted small mb-0">Filter by location, paid/unpaid, or keyword to find the right fit.</p>
+            </div>
+          </div>
+          <div class="d-flex align-items-start gap-3">
+            <div class="xp-step-number flex-shrink-0">3</div>
+            <div>
+              <div class="fw-600 mb-1">Apply &amp; track</div>
+              <p class="text-muted small mb-0">Submit your application with a short cover letter and track its status in your dashboard.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Employers -->
+      <div class="col-md-6">
+        <h5 class="fw-700 mb-4 d-flex align-items-center gap-2">
+          <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-700">🏢 Employers</span>
+        </h5>
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex align-items-start gap-3">
+            <div class="xp-step-number flex-shrink-0" style="background:#fef3c7;color:#92400e">1</div>
+            <div>
+              <div class="fw-600 mb-1">Register your company</div>
+              <p class="text-muted small mb-0">Create a free employer account with your company name — takes 60 seconds.</p>
+            </div>
+          </div>
+          <div class="d-flex align-items-start gap-3">
+            <div class="xp-step-number flex-shrink-0" style="background:#fef3c7;color:#92400e">2</div>
+            <div>
+              <div class="fw-600 mb-1">Post a listing</div>
+              <p class="text-muted small mb-0">Describe your work experience role, set paid/unpaid, add a deadline, and go live immediately.</p>
+            </div>
+          </div>
+          <div class="d-flex align-items-start gap-3">
+            <div class="xp-step-number flex-shrink-0" style="background:#fef3c7;color:#92400e">3</div>
+            <div>
+              <div class="fw-600 mb-1">Review &amp; accept</div>
+              <p class="text-muted small mb-0">Read cover letters from interested students and accept or decline with one click.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<% if (!user) { %>
+<section class="py-5">
+  <div class="container">
+    <div class="xp-cta text-white text-center px-4 py-5 rounded-3">
+      <h2 class="fw-bold mb-3">Ready to get started?</h2>
+      <p class="lead opacity-75 mb-4">Join hundreds of A-Level students and UK employers already on XPSearch.</p>
+      <div class="d-flex flex-wrap gap-3 justify-content-center">
+        <a href="/auth/register" class="btn btn-light btn-lg fw-600 px-5 rounded-pill">Create Free Account</a>
+        <a href="/jobs" class="btn btn-outline-light btn-lg px-5 rounded-pill">Browse First</a>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<%- include('partials/footer') %>

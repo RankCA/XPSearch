@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: xpsearch
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: CSRF_SECRET
+        generateValue: true
+    disk:
+      name: xpsearch-data
+      mountPath: /opt/render/project/src
+      sizeGB: 1

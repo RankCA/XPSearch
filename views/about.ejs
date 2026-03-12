@@ -1,0 +1,118 @@
+<%- include('partials/header') %>
+
+<!-- Hero -->
+<section class="xp-hero text-white position-relative">
+  <div class="container position-relative text-center py-4" style="color:#fff">
+    <span class="xp-section-label d-block mb-3" style="color:rgba(255,255,255,.75)">Our Mission</span>
+    <h1 class="display-5 fw-bold mb-3" style="color:#fff">About XPSearch</h1>
+    <p class="lead mx-auto" style="max-width:540px;color:rgba(255,255,255,.85)">
+      Bridging the gap between ambitious A-Level students and the employers who want to support the next generation.
+    </p>
+  </div>
+  <div class="xp-hero-wave">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,30 C300,60 900,0 1200,30 L1200,60 L0,60 Z" fill="#f8fafc"/>
+    </svg>
+  </div>
+</section>
+
+<div class="container py-5">
+
+  <!-- What is XPSearch -->
+  <div class="row align-items-center g-5 mb-5">
+    <div class="col-md-6">
+      <span class="xp-section-label d-block mb-2">What is XPSearch?</span>
+      <h2 class="fw-bold mb-3">Work experience, made simple</h2>
+      <p class="text-muted lh-lg">
+        XPSearch is a free platform connecting Year 12 and Year 13 A-Level students with UK employers offering
+        work experience placements — both paid and unpaid.
+      </p>
+      <p class="text-muted lh-lg">
+        Finding work experience is one of the most valuable things a sixth-form student can do.
+        It opens doors, builds confidence, and gives you real-world skills before you head to university or start your career.
+        But until now, it's been hard to find — most opportunities were hidden behind personal connections.
+        XPSearch changes that.
+      </p>
+    </div>
+    <div class="col-md-6">
+      <div class="row g-3">
+        <div class="col-6">
+          <div class="xp-card p-4 text-center">
+            <div class="fs-1 mb-2">🎓</div>
+            <div class="fw-700">For Students</div>
+            <p class="text-muted small mb-0 mt-1">Discover paid and unpaid placements tailored for sixth formers</p>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="xp-card p-4 text-center">
+            <div class="fs-1 mb-2">🏢</div>
+            <div class="fw-700">For Employers</div>
+            <p class="text-muted small mb-0 mt-1">Post listings and connect with motivated A-Level students</p>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="xp-card p-4 text-center">
+            <div class="fs-1 mb-2">💯</div>
+            <div class="fw-700">Always Free</div>
+            <p class="text-muted small mb-0 mt-1">No fees, no subscriptions — free for everyone</p>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="xp-card p-4 text-center">
+            <div class="fs-1 mb-2">🇬🇧</div>
+            <div class="fw-700">UK-Focused</div>
+            <p class="text-muted small mb-0 mt-1">Built specifically for UK sixth-form students</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-5"/>
+
+  <!-- For students -->
+  <div class="row g-5 mb-5">
+    <div class="col-md-6">
+      <h3 class="fw-bold mb-3">🎓 For Students</h3>
+      <p class="text-muted lh-lg">
+        Whether you're in Year 12 or Year 13, work experience looks great on your UCAS personal statement and CV.
+        XPSearch lets you:
+      </p>
+      <ul class="text-muted lh-lg ps-3">
+        <li class="mb-2">Browse hundreds of real opportunities from UK companies</li>
+        <li class="mb-2">Filter by paid/unpaid and location</li>
+        <li class="mb-2">Apply in seconds with a short cover letter</li>
+        <li class="mb-2">Track all your applications in one place</li>
+        <li>Get notified when an employer accepts you</li>
+      </ul>
+      <a href="/auth/register" class="btn btn-primary rounded-pill px-4 mt-2">Sign up as a Student</a>
+    </div>
+    <div class="col-md-6">
+      <h3 class="fw-bold mb-3">🏢 For Employers</h3>
+      <p class="text-muted lh-lg">
+        Work experience students bring fresh perspectives and enthusiasm. XPSearch makes it easy for
+        you to find and manage student placements — completely free. You can:
+      </p>
+      <ul class="text-muted lh-lg ps-3">
+        <li class="mb-2">Post paid or unpaid work experience listings in minutes</li>
+        <li class="mb-2">Receive applications with cover letters from motivated students</li>
+        <li class="mb-2">Accept or decline applicants with a single click</li>
+        <li class="mb-2">Edit or close listings at any time</li>
+        <li>Help build the next generation of talent</li>
+      </ul>
+      <a href="/auth/register" class="btn btn-warning rounded-pill px-4 mt-2 fw-600">Sign up as an Employer</a>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <% if (!user) { %>
+  <div class="xp-cta text-white text-center px-4 py-5 rounded-3">
+    <h2 class="fw-bold mb-3">Ready to get started?</h2>
+    <p class="lead opacity-75 mb-4">It takes less than two minutes to create your free account.</p>
+    <a href="/auth/register" class="btn btn-light btn-lg rounded-pill px-5 fw-600">Create Free Account</a>
+  </div>
+  <% } %>
+
+</div>
+
+<%- include('partials/footer') %>

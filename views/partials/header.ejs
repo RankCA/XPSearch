@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XPSearch — Work Experience for A-Level Students</title>
+  <!-- Bootstrap CSS (served locally) -->
+  <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons (served locally) -->
+  <link href="/css/bootstrap-icons.min.css" rel="stylesheet"/>
+  <!-- XPSearch custom styles (includes Inter font import) -->
+  <link href="/css/style.css" rel="stylesheet"/>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg xp-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <i class="bi bi-briefcase-fill me-1"></i>XP<span class="brand-dot">Search</span>
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item">
+          <a class="nav-link" href="/jobs"><i class="bi bi-search me-1"></i>Browse Jobs</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about"><i class="bi bi-info-circle me-1"></i>About</a>
+        </li>
+        <% if (user && user.role === 'employer') { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/jobs/new"><i class="bi bi-plus-circle me-1"></i>Post a Job</a>
+        </li>
+        <% } %>
+      </ul>
+
+      <ul class="navbar-nav ms-auto align-items-center gap-1">
+        <% if (user) { %>
+          <li class="nav-item">
+            <span class="xp-role-badge <%= user.role === 'employer' ? 'bg-warning text-dark' : 'bg-indigo-soft text-indigo' %> ms-1">
+              <%= user.role === 'employer' ? '🏢 Employer' : '🎓 Student' %>
+            </span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/profile">
+              <i class="bi bi-person-circle me-1"></i><%= user.name.split(' ')[0] %>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/dashboard"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
+          </li>
+          <li class="nav-item ms-1">
+            <form action="/auth/logout" method="POST" class="d-inline">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+              <button type="submit" class="btn btn-sm btn-outline-light rounded-pill px-3">Logout</button>
+            </form>
+          </li>
+        <% } else { %>
+          <li class="nav-item"><a class="nav-link" href="/auth/login">Login</a></li>
+          <li class="nav-item ms-1">
+            <a class="btn btn-sm btn-primary rounded-pill px-3" href="/auth/register">Get Started</a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Flash messages -->
+<div class="xp-flash">
+  <% if (flash && flash.success) { %>
+    <div class="alert alert-success alert-dismissible fade show mb-0 rounded-0 border-0 border-bottom" role="alert">
+      <div class="container">
+        <i class="bi bi-check-circle-fill me-2"></i><%= flash.success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    </div>
+  <% } %>
+  <% if (flash && flash.error) { %>
+    <div class="alert alert-danger alert-dismissible fade show mb-0 rounded-0 border-0 border-bottom" role="alert">
+      <div class="container">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><%= flash.error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    </div>
+  <% } %>
+</div>

@@ -1,0 +1,53 @@
+  <footer class="xp-footer mt-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4 mb-2">
+          <div class="fw-800 fs-5 text-white mb-2">
+            <i class="bi bi-briefcase-fill me-1" style="color:#818cf8"></i>XPSearch
+          </div>
+          <p class="small" style="color:rgba(255,255,255,.5);max-width:280px;line-height:1.7">
+            Connecting Year 12 &amp; 13 A-Level students with paid and unpaid work experience opportunities across the UK.
+          </p>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Platform</h6>
+          <div class="d-flex flex-column">
+            <a href="/jobs">Browse Jobs</a>
+            <a href="/about">About</a>
+            <% if (user && user.role === 'employer') { %>
+            <a href="/jobs/new">Post a Job</a>
+            <% } else { %>
+            <a href="/auth/register">Register</a>
+            <% } %>
+          </div>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Account</h6>
+          <div class="d-flex flex-column">
+            <% if (user) { %>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">Profile</a>
+            <% } else { %>
+            <a href="/auth/login">Login</a>
+            <a href="/auth/register">Get Started Free</a>
+            <% } %>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <h6>About XPSearch</h6>
+          <p class="small" style="color:rgba(255,255,255,.5);line-height:1.7">
+            XPSearch is a free platform built to bridge the gap between ambitious A-Level students and employers who want to nurture the next generation of talent.
+          </p>
+        </div>
+      </div>
+      <div class="xp-footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+        <span>&copy; 2025 XPSearch &mdash; All rights reserved.</span>
+        <span>Made with <span style="color:#f87171">&#9829;</span> for A-Level students across the UK</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS (served locally) -->
+  <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
