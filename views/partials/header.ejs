@@ -44,6 +44,7 @@
             <li class="nav-item"><a class="nav-link" href="/dashboard"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
             <li class="nav-item">
               <form action="/auth/logout" method="POST" class="d-inline">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
                 <button type="submit" class="btn btn-outline-light btn-sm ms-2">Logout</button>
               </form>
             </li>

@@ -9,6 +9,7 @@
             <div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %></div>
           <% } %>
           <form action="/auth/register" method="POST" id="registerForm">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
             <div class="mb-3">
               <label class="form-label fw-semibold">Full Name</label>
               <input type="text" name="name" value="<%= formData.name || '' %>" class="form-control" required placeholder="Your full name"/>

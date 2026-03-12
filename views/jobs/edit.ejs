@@ -11,6 +11,7 @@
             <div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %></div>
           <% } %>
           <form action="/jobs/<%= job.id %>?_method=PUT" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
             <div class="mb-3">
               <label class="form-label fw-semibold">Job Title <span class="text-danger">*</span></label>
               <input type="text" name="title" value="<%= job.title %>" class="form-control" required/>

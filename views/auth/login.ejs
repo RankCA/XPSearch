@@ -9,6 +9,7 @@
             <div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %></div>
           <% } %>
           <form action="/auth/login" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
             <div class="mb-3">
               <label class="form-label fw-semibold">Email Address</label>
               <input type="email" name="email" class="form-control" required autofocus placeholder="you@example.com"/>

@@ -2,8 +2,10 @@ const express = require('express');
 const session = require('express-session');
 const methodOverride = require('method-override');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const SqliteStore = require('connect-sqlite3')(session);
 const rateLimit = require('express-rate-limit');
+const { doubleCsrf } = require('csrf-csrf');
 const { requireAuth } = require('./middleware/auth');
 
 const app = express();
@@ -13,6 +15,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(methodOverride('_method'));
 
 app.use(session({
@@ -43,6 +46,19 @@ const generalLimiter = rateLimit({
   legacyHeaders: false
 });
 
+const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
+  getSecret: () => 'xpsearch-csrf-secret-change-in-production',
+  getSessionIdentifier: (req) => req.sessionID || '',
+  cookieName: 'xpsearch.csrf-token',
+  cookieOptions: {
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true
+  },
+  size: 64,
+  getCsrfTokenFromRequest: (req) => req.body._csrf || req.headers['x-csrf-token']
+});
+
 app.use((req, res, next) => {
   res.locals.user = req.session.userId ? {
     id: req.session.userId,
@@ -52,8 +68,11 @@ app.use((req, res, next) => {
   } : null;
   res.locals.flash = req.session.flash || {};
   delete req.session.flash;
+  res.locals.csrfToken = generateCsrfToken(req, res);
   next();
 });
+
+app.use(doubleCsrfProtection);
 
 app.use('/auth', authLimiter, require('./routes/auth'));
 app.use('/jobs', generalLimiter, require('./routes/jobs'));
@@ -116,6 +135,9 @@ app.get('/dashboard', generalLimiter, requireAuth, (req, res) => {
 });
 
 app.use((err, req, res, next) => {
+  if (err.code === 'EBADCSRFTOKEN') {
+    return res.status(403).render('error', { message: 'Invalid or missing CSRF token. Please go back and try again.' });
+  }
   console.error(err.stack);
   res.status(500).render('error', { message: 'Something went wrong. Please try again.' });
 });
