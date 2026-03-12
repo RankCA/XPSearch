@@ -61,10 +61,7 @@ router.post('/', async (req, res) => {
       db.prepare('DELETE FROM applications WHERE student_id = ?').run(profile.id);
     } else if (profile.role === 'employer') {
       // Delete applications for all jobs owned by this employer, then the jobs
-      const jobIds = db.prepare('SELECT id FROM jobs WHERE employer_id = ?').all(profile.id);
-      for (const job of jobIds) {
-        db.prepare('DELETE FROM applications WHERE job_id = ?').run(job.id);
-      }
+      db.prepare('DELETE FROM applications WHERE job_id IN (SELECT id FROM jobs WHERE employer_id = ?)').run(profile.id);
       db.prepare('DELETE FROM jobs WHERE employer_id = ?').run(profile.id);
     }
     db.prepare('DELETE FROM users WHERE id = ?').run(profile.id);
