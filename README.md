@@ -8,13 +8,14 @@
 
 1. [What is XPSearch?](#what-is-xpsearch)
 2. [Features](#features)
-3. [How do I access / host it?](#how-do-i-access--host-it)
+3. [Quick Start (Step-by-Step)](#quick-start-step-by-step)
+4. [How do I access / host it?](#how-do-i-access--host-it)
    - [Option A — Railway (recommended, free)](#option-a--railway-recommended-free)
    - [Option B — Render (free)](#option-b--render-free)
    - [Option C — Run locally](#option-c--run-locally)
    - [Why not GitHub Pages?](#why-not-github-pages)
-4. [Environment Variables](#environment-variables)
-5. [Tech Stack](#tech-stack)
+5. [Environment Variables](#environment-variables)
+6. [Tech Stack](#tech-stack)
 
 ---
 
@@ -39,6 +40,113 @@ XPSearch is a web platform where:
 | 🔍 Search & filter | Search by keyword and filter by paid/unpaid |
 | 👤 Profile page | Update your name, company name, and password |
 | 🔒 Security | CSRF protection, bcrypt passwords, rate limiting, httpOnly cookies |
+
+---
+
+## Quick Start (Step-by-Step)
+
+This section walks you through running XPSearch on your own computer from scratch. No prior experience needed.
+
+### Step 1 — Install Node.js
+
+XPSearch runs on **Node.js** (a program that lets your computer run JavaScript outside a browser).
+
+1. Go to **https://nodejs.org**.
+2. Download the **LTS** (Long Term Support) version — this is the big green button on the front page.
+3. Run the installer and accept all the defaults (just keep clicking "Next").
+4. When it's done, open a terminal to verify it worked:
+   - **Windows**: press `Win + R`, type `cmd`, and press Enter.
+   - **Mac**: open **Terminal** from Applications → Utilities.
+   - **Linux**: open your terminal app.
+
+   Then type:
+   ```bash
+   node --version
+   ```
+   You should see a version number like `v20.x.x` or `v22.x.x`. If you get "command not found", restart your computer and try again.
+
+### Step 2 — Download the code
+
+**Option A — Using Git (recommended):**
+
+If you have Git installed, open a terminal and run:
+```bash
+git clone https://github.com/RankCA/XPSearch.git
+cd XPSearch
+```
+
+**Option B — Download as a ZIP (no Git needed):**
+
+1. Go to **https://github.com/RankCA/XPSearch**.
+2. Click the green **Code** button → **Download ZIP**.
+3. Extract (unzip) the downloaded file to a folder you'll remember (e.g. your Desktop).
+4. Open a terminal and navigate to that folder:
+   ```bash
+   cd path/to/XPSearch
+   ```
+   For example on Windows: `cd C:\Users\YourName\Desktop\XPSearch`
+
+### Step 3 — Install dependencies
+
+In your terminal (make sure you're inside the `XPSearch` folder), run:
+
+```bash
+npm install
+```
+
+This downloads all the libraries the app needs. It may take a minute. You'll see a progress bar and then a summary when it's done.
+
+> **Don't worry** if you see some `WARN` messages — those are fine. Only `ERR` messages are a problem.
+
+### Step 4 — Start the server
+
+Run:
+
+```bash
+npm start
+```
+
+You should see:
+
+```
+XPSearch running on http://localhost:3000
+```
+
+That means the server is running! 🎉
+
+### Step 5 — Open the website
+
+Open your web browser (Chrome, Firefox, Edge, Safari — any will work) and go to:
+
+**http://localhost:3000**
+
+You should see the XPSearch home page.
+
+### Step 6 — Use the website
+
+The site starts with no accounts and no listings, so here's how to get going:
+
+1. **Create an employer account** — click **Register**, choose **Employer**, fill in the form, and submit.
+2. **Post a job** — once logged in as an employer, click **Post Opportunity** on your dashboard and fill in the details.
+3. **Create a student account** — log out, then **Register** again as a **Student** (Year 12 or 13).
+4. **Apply for a job** — browse the listings, click on one, write a short cover letter, and submit your application.
+5. **Manage applications** — log back in as the employer to accept or reject the student's application.
+
+### Stopping the server
+
+To stop the server, go to your terminal and press **Ctrl + C**.
+
+To start it again later, just navigate to the `XPSearch` folder in your terminal and run `npm start` again.
+
+### Optional: Auto-reload during development
+
+If you're editing the code and want the server to restart automatically when you save a file, use:
+
+```bash
+npm run dev
+```
+
+instead of `npm start`. This uses [nodemon](https://nodemon.io/) to watch for changes.
 
 ---
 
