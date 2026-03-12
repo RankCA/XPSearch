@@ -18,9 +18,17 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(methodOverride('_method'));
 
+const SESSION_SECRET = process.env.SESSION_SECRET || (process.env.NODE_ENV === 'production'
+  ? (() => { throw new Error('SESSION_SECRET environment variable must be set in production'); })()
+  : 'xpsearch-dev-secret-not-for-production');
+
+const CSRF_SECRET = process.env.CSRF_SECRET || (process.env.NODE_ENV === 'production'
+  ? (() => { throw new Error('CSRF_SECRET environment variable must be set in production'); })()
+  : 'xpsearch-dev-csrf-secret-not-for-production');
+
 app.use(session({
   store: new SqliteStore({ db: 'sessions.db', dir: '.' }),
-  secret: 'xpsearch-secret-key-change-in-production',
+  secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -47,7 +55,7 @@ const generalLimiter = rateLimit({
 });
 
 const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => 'xpsearch-csrf-secret-change-in-production',
+  getSecret: () => CSRF_SECRET,
   getSessionIdentifier: (req) => req.session.csrfId || '',
   cookieName: 'xpsearch.csrf-token',
   cookieOptions: {
