@@ -6,6 +6,7 @@ const { requireAuth, requireRole } = require('../middleware/auth');
 router.get('/', (req, res) => {
   const keyword = req.query.keyword || '';
   const paid = req.query.paid || '';
+  const location = req.query.location || '';
 
   let query = `
     SELECT jobs.*, users.name AS employer_name, users.company_name,
@@ -21,6 +22,10 @@ router.get('/', (req, res) => {
     query += ` AND (jobs.title LIKE ? OR jobs.description LIKE ? OR users.company_name LIKE ?)`;
     params.push(`%${keyword}%`, `%${keyword}%`, `%${keyword}%`);
   }
+  if (location) {
+    query += ` AND jobs.location LIKE ?`;
+    params.push(`%${location}%`);
+  }
   if (paid === '1') {
     query += ` AND jobs.is_paid = 1`;
   } else if (paid === '0') {
@@ -29,7 +34,7 @@ router.get('/', (req, res) => {
 
   query += ` GROUP BY jobs.id ORDER BY jobs.created_at DESC`;
   const jobs = db.prepare(query).all(...params);
-  res.render('jobs/index', { jobs, keyword, paid });
+  res.render('jobs/index', { jobs, keyword, paid, location });
 });
 
 router.get('/new', requireRole('employer'), (req, res) => {
@@ -40,6 +45,18 @@ router.post('/', requireRole('employer'), (req, res) => {
   const { title, description, requirements, location, is_paid, salary, deadline } = req.body;
   if (!title || !description || !location) {
     return res.render('jobs/new', { error: 'Please fill in all required fields.', formData: req.body });
+  }
+  if (title.trim().length > 200) {
+    return res.render('jobs/new', { error: 'Job title must be 200 characters or fewer.', formData: req.body });
+  }
+  if (description.trim().length > 10000) {
+    return res.render('jobs/new', { error: 'Description must be 10,000 characters or fewer.', formData: req.body });
+  }
+  if (requirements && requirements.trim().length > 5000) {
+    return res.render('jobs/new', { error: 'Requirements must be 5,000 characters or fewer.', formData: req.body });
+  }
+  if (deadline && new Date(deadline) < new Date(new Date().toDateString())) {
+    return res.render('jobs/new', { error: 'Deadline cannot be in the past.', formData: req.body });
   }
   const isPaid = is_paid === '1' ? 1 : 0;
   db.prepare(
@@ -98,6 +115,15 @@ router.put('/:id', requireRole('employer'), (req, res) => {
   const { title, description, requirements, location, is_paid, salary, deadline, status } = req.body;
   if (!title || !description || !location) {
     return res.render('jobs/edit', { job: { ...job, ...req.body }, error: 'Please fill in all required fields.' });
+  }
+  if (title.trim().length > 200) {
+    return res.render('jobs/edit', { job: { ...job, ...req.body }, error: 'Job title must be 200 characters or fewer.' });
+  }
+  if (description.trim().length > 10000) {
+    return res.render('jobs/edit', { job: { ...job, ...req.body }, error: 'Description must be 10,000 characters or fewer.' });
+  }
+  if (requirements && requirements.trim().length > 5000) {
+    return res.render('jobs/edit', { job: { ...job, ...req.body }, error: 'Requirements must be 5,000 characters or fewer.' });
   }
   const isPaid = is_paid === '1' ? 1 : 0;
   db.prepare(

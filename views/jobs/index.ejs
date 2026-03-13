@@ -19,22 +19,28 @@
   <!-- Search bar -->
   <div class="xp-card p-3 mb-4">
     <form action="/jobs" method="GET" class="row g-2 align-items-center">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="input-group">
           <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
-          <input type="text" name="keyword" value="<%= keyword %>" class="form-control border-start-0 ps-0" placeholder="Search by title, company, or keyword..."/>
+          <input type="text" name="keyword" value="<%= keyword %>" class="form-control border-start-0 ps-0" placeholder="Title, company, or keyword..."/>
         </div>
       </div>
       <div class="col-md-3">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-geo-alt"></i></span>
+          <input type="text" name="location" value="<%= location %>" class="form-control border-start-0 ps-0" placeholder="Location..."/>
+        </div>
+      </div>
+      <div class="col-md-2">
         <select name="paid" class="form-select">
           <option value="">All Types</option>
-          <option value="1" <%= paid === '1' ? 'selected' : '' %>>💰 Paid Only</option>
-          <option value="0" <%= paid === '0' ? 'selected' : '' %>>🤝 Unpaid Only</option>
+          <option value="1" <%= paid === '1' ? 'selected' : '' %>>💰 Paid</option>
+          <option value="0" <%= paid === '0' ? 'selected' : '' %>>🤝 Unpaid</option>
         </select>
       </div>
       <div class="col-md-3 d-flex gap-2">
         <button type="submit" class="btn btn-primary flex-fill rounded-pill"><i class="bi bi-search me-1"></i>Search</button>
-        <% if (keyword || paid) { %>
+        <% if (keyword || paid || location) { %>
           <a href="/jobs" class="btn btn-outline-secondary rounded-pill px-3" title="Clear filters"><i class="bi bi-x-lg"></i></a>
         <% } %>
       </div>
@@ -47,7 +53,7 @@
       <i class="bi bi-inbox display-1 d-block mb-3 opacity-25"></i>
       <h5 class="fw-semibold">No opportunities found</h5>
       <p class="small mb-3">Try adjusting your search filters or check back soon.</p>
-      <% if (keyword || paid) { %>
+      <% if (keyword || paid || location) { %>
         <a href="/jobs" class="btn btn-outline-primary btn-sm rounded-pill">Clear filters</a>
       <% } %>
     </div>

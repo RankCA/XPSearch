@@ -22,7 +22,7 @@
           <div class="row g-3 mb-3">
             <div class="col-md-8">
               <label class="form-label fw-600 small">Job Title <span class="text-danger">*</span></label>
-              <input type="text" name="title" value="<%= job.title %>" class="form-control" required/>
+              <input type="text" name="title" value="<%= job.title %>" class="form-control" required maxlength="200"/>
             </div>
             <div class="col-md-4">
               <label class="form-label fw-600 small">Location <span class="text-danger">*</span></label>
@@ -32,12 +32,12 @@
 
           <div class="mb-3">
             <label class="form-label fw-600 small">Description <span class="text-danger">*</span></label>
-            <textarea name="description" class="form-control" rows="5" required><%= job.description %></textarea>
+            <textarea name="description" class="form-control" rows="5" required maxlength="10000"><%= job.description %></textarea>
           </div>
 
           <div class="mb-3">
             <label class="form-label fw-600 small">Requirements <span class="text-muted fw-normal">(optional)</span></label>
-            <textarea name="requirements" class="form-control" rows="3"><%= job.requirements || '' %></textarea>
+            <textarea name="requirements" class="form-control" rows="3" maxlength="5000"><%= job.requirements || '' %></textarea>
           </div>
 
           <div class="row g-3 mb-3">

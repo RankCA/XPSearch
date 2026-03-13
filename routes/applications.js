@@ -10,14 +10,42 @@ router.post('/', requireRole('student'), (req, res) => {
     req.session.flash = { error: 'Job not found or is no longer accepting applications.' };
     return res.redirect('/jobs');
   }
+  // Enforce deadline
+  if (job.deadline && new Date(job.deadline) < new Date(new Date().toDateString())) {
+    req.session.flash = { error: 'The application deadline for this role has passed.' };
+    return res.redirect(`/jobs/${job_id}`);
+  }
   const existing = db.prepare('SELECT id FROM applications WHERE job_id = ? AND student_id = ?').get(job_id, req.session.userId);
   if (existing) {
     req.session.flash = { error: 'You have already applied to this job.' };
     return res.redirect(`/jobs/${job_id}`);
   }
-  db.prepare('INSERT INTO applications (job_id, student_id, cover_letter) VALUES (?, ?, ?)').run(job_id, req.session.userId, cover_letter ? cover_letter.trim() : null);
+  // Cover letter length limit
+  const trimmedCover = cover_letter ? cover_letter.trim() : null;
+  if (trimmedCover && trimmedCover.length > 5000) {
+    req.session.flash = { error: 'Cover letter must be 5,000 characters or fewer.' };
+    return res.redirect(`/jobs/${job_id}`);
+  }
+  db.prepare('INSERT INTO applications (job_id, student_id, cover_letter) VALUES (?, ?, ?)').run(job_id, req.session.userId, trimmedCover);
   req.session.flash = { success: 'Application submitted successfully!' };
   res.redirect(`/jobs/${job_id}`);
+});
+
+// Student withdraws their own pending application
+router.post('/:id/withdraw', requireRole('student'), (req, res) => {
+  const application = db.prepare(
+    'SELECT * FROM applications WHERE id = ? AND student_id = ?'
+  ).get(req.params.id, req.session.userId);
+  if (!application) {
+    return res.status(404).render('error', { message: 'Application not found.' });
+  }
+  if (application.status !== 'pending') {
+    req.session.flash = { error: 'Only pending applications can be withdrawn.' };
+    return res.redirect('/dashboard');
+  }
+  db.prepare('DELETE FROM applications WHERE id = ?').run(application.id);
+  req.session.flash = { success: 'Application withdrawn successfully.' };
+  res.redirect('/dashboard');
 });
 
 router.post('/:id/status', requireRole('employer'), (req, res) => {

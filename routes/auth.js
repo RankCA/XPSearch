@@ -21,6 +21,7 @@ router.post('/login', (req, res) => {
   req.session.userName = user.name;
   req.session.userRole = user.role;
   req.session.userCompanyName = user.company_name;
+  req.session.userYearGroup = user.year_group;
   req.session.flash = { success: `Welcome back, ${user.name}!` };
   res.redirect('/dashboard');
 });
@@ -73,6 +74,7 @@ router.post('/register', async (req, res) => {
   req.session.userName = name.trim();
   req.session.userRole = role;
   req.session.userCompanyName = company_name ? company_name.trim() : null;
+  req.session.userYearGroup = year_group || null;
   req.session.flash = { success: `Welcome to XPSearch, ${name.trim()}!` };
   res.redirect('/dashboard');
 });
