@@ -10,6 +10,10 @@ const { requireAuth } = require('./middleware/auth');
 
 const app = express();
 
+// Trust first proxy (Railway, Render, etc.) so that secure cookies,
+// rate-limiting by real client IP, and req.protocol all work correctly.
+app.set('trust proxy', 1);
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
