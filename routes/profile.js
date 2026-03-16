@@ -49,6 +49,29 @@ router.post('/', async (req, res) => {
     return res.redirect('/profile');
   }
 
+  if (action === 'delete_account') {
+    const { confirm_password } = req.body;
+    if (!confirm_password || !bcrypt.compareSync(confirm_password, profile.password)) {
+      req.session.flash = { error: 'Incorrect password. Account was not deleted.' };
+      return res.redirect('/profile');
+    }
+
+    // Delete all associated data (right to erasure)
+    if (profile.role === 'student') {
+      db.prepare('DELETE FROM applications WHERE student_id = ?').run(profile.id);
+    } else if (profile.role === 'employer') {
+      // Delete applications for all jobs owned by this employer, then the jobs
+      db.prepare('DELETE FROM applications WHERE job_id IN (SELECT id FROM jobs WHERE employer_id = ?)').run(profile.id);
+      db.prepare('DELETE FROM jobs WHERE employer_id = ?').run(profile.id);
+    }
+    db.prepare('DELETE FROM users WHERE id = ?').run(profile.id);
+
+    req.session.destroy(() => {
+      res.redirect('/');
+    });
+    return;
+  }
+
   res.redirect('/profile');
 });
 

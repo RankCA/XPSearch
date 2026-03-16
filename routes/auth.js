@@ -21,6 +21,7 @@ router.post('/login', (req, res) => {
   req.session.userName = user.name;
   req.session.userRole = user.role;
   req.session.userCompanyName = user.company_name;
+  req.session.userYearGroup = user.year_group;
   req.session.flash = { success: `Welcome back, ${user.name}!` };
   res.redirect('/dashboard');
 });
@@ -31,7 +32,7 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-  const { name, email, password, role, year_group, company_name } = req.body;
+  const { name, email, password, role, year_group, company_name, consent_data, confirm_age } = req.body;
   const formData = { name, email, role, year_group, company_name };
 
   if (!name || !email || !password || !role) {
@@ -42,6 +43,12 @@ router.post('/register', async (req, res) => {
   }
   if (role === 'student' && !['12', '13'].includes(year_group)) {
     return res.render('auth/register', { error: 'Please select a valid year group (12 or 13).', formData });
+  }
+  if (role === 'student' && confirm_age !== '1') {
+    return res.render('auth/register', { error: 'You must confirm you are aged 16 or over and that a parent/guardian is aware.', formData });
+  }
+  if (consent_data !== '1') {
+    return res.render('auth/register', { error: 'You must agree to the Privacy Policy to create an account.', formData });
   }
   if (role === 'employer' && !company_name) {
     return res.render('auth/register', { error: 'Please enter your company name.', formData });
@@ -67,6 +74,7 @@ router.post('/register', async (req, res) => {
   req.session.userName = name.trim();
   req.session.userRole = role;
   req.session.userCompanyName = company_name ? company_name.trim() : null;
+  req.session.userYearGroup = year_group || null;
   req.session.flash = { success: `Welcome to XPSearch, ${name.trim()}!` };
   res.redirect('/dashboard');
 });

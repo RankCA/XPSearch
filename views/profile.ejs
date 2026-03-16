@@ -58,7 +58,7 @@
       </div>
 
       <!-- Change password -->
-      <div class="xp-card p-4">
+      <div class="xp-card p-4 mb-4">
         <h6 class="fw-700 mb-3 text-muted text-uppercase" style="font-size:.72rem;letter-spacing:.08em">Change Password</h6>
         <% if (pwError) { %>
           <div class="alert alert-danger py-2 small mb-3"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= pwError %></div>
@@ -76,6 +76,41 @@
           </div>
           <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Update Password</button>
         </form>
+      </div>
+
+      <!-- Delete account (Right to Erasure) -->
+      <div class="xp-card p-4 border-danger" style="border-left:3px solid var(--bs-danger)">
+        <h6 class="fw-700 mb-2 text-danger text-uppercase" style="font-size:.72rem;letter-spacing:.08em">
+          <i class="bi bi-exclamation-triangle me-1"></i>Delete Account
+        </h6>
+        <p class="text-muted small mb-3">
+          Permanently delete your account and all associated data (applications, job listings, and personal information).
+          This action cannot be undone. Under UK GDPR, this is your <strong>right to erasure</strong>.
+        </p>
+        <button class="btn btn-outline-danger btn-sm rounded-pill px-3" type="button"
+          data-bs-toggle="collapse" data-bs-target="#deleteConfirm">
+          <i class="bi bi-trash me-1"></i>I want to delete my account
+        </button>
+        <div class="collapse mt-3" id="deleteConfirm">
+          <div class="alert alert-danger py-2 small mb-3">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Warning:</strong> This will permanently delete your account, all your
+            <% if (user.role === 'employer') { %>job listings and received applications<% } else { %>applications<% } %>,
+            and all personal data. Enter your password to confirm.
+          </div>
+          <form action="/profile" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+            <input type="hidden" name="action" value="delete_account"/>
+            <div class="mb-3">
+              <label class="form-label fw-600 small">Confirm your password</label>
+              <input type="password" name="confirm_password" class="form-control" required autocomplete="current-password"/>
+            </div>
+            <button type="submit" class="btn btn-danger rounded-pill px-4"
+              onclick="return confirm('Are you absolutely sure? All your data will be permanently deleted.')">
+              <i class="bi bi-trash me-1"></i>Permanently Delete My Account
+            </button>
+          </form>
+        </div>
       </div>
 
     </div>

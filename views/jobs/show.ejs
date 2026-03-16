@@ -58,12 +58,13 @@
           </div>
           <% } %>
           <% if (job.deadline) { %>
+          <% const deadlinePassed = new Date(job.deadline) < new Date(new Date().toDateString()); %>
           <div class="col-6 col-sm-4">
             <div class="d-flex align-items-center gap-2">
-              <div class="rounded-2 p-2" style="background:#fee2e2;color:#991b1b"><i class="bi bi-calendar-event fs-5"></i></div>
+              <div class="rounded-2 p-2" style="background:<%= deadlinePassed ? '#fee2e2' : '#fef3c7' %>;color:<%= deadlinePassed ? '#991b1b' : '#92400e' %>"><i class="bi bi-calendar-event fs-5"></i></div>
               <div>
                 <div class="text-muted" style="font-size:.75rem">Deadline</div>
-                <div class="fw-600 small"><%= job.deadline %></div>
+                <div class="fw-600 small"><%= job.deadline %><% if (deadlinePassed) { %> <span class="text-danger">(Expired)</span><% } %></div>
               </div>
             </div>
           </div>
@@ -113,7 +114,11 @@
                         <strong class="fw-600"><%= app.student_name %></strong>
                         <span class="badge bg-light text-dark border" style="font-size:.7rem">Year <%= app.year_group %></span>
                       </div>
-                      <p class="mb-1 small text-muted"><i class="bi bi-envelope me-1"></i><%= app.student_email %></p>
+                      <% if (app.status === 'accepted') { %>
+                        <p class="mb-1 small text-muted"><i class="bi bi-envelope me-1"></i><%= app.student_email %></p>
+                      <% } else { %>
+                        <p class="mb-1 small text-muted fst-italic"><i class="bi bi-shield-lock me-1"></i>Email visible after accepting</p>
+                      <% } %>
                       <% if (app.cover_letter) { %>
                         <p class="mb-1 small text-muted fst-italic lh-base">
                           "<%= app.cover_letter.substring(0, 180) %><%= app.cover_letter.length > 180 ? '…' : '' %>"
@@ -168,10 +173,17 @@
           <a href="/auth/login" class="btn btn-outline-secondary w-100 rounded-pill">Already have an account? Login</a>
 
         <% } else if (user.role === 'student') { %>
-          <% if (job.status !== 'open') { %>
+          <% const jobDeadlinePassed = job.deadline && new Date(job.deadline) < new Date(new Date().toDateString()); %>
+          <% if (job.status !== 'open' || jobDeadlinePassed) { %>
             <div class="text-center py-3">
               <i class="bi bi-lock display-4 d-block mb-2 text-muted opacity-50"></i>
-              <p class="text-muted mb-0">This listing is no longer accepting applications.</p>
+              <p class="text-muted mb-0">
+                <% if (jobDeadlinePassed) { %>
+                  The application deadline for this role has passed.
+                <% } else { %>
+                  This listing is no longer accepting applications.
+                <% } %>
+              </p>
             </div>
           <% } else if (application) { %>
             <h5 class="fw-700 mb-3">Your Application</h5>
@@ -195,8 +207,8 @@
               <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
               <input type="hidden" name="job_id" value="<%= job.id %>"/>
               <div class="mb-3">
-                <label class="form-label fw-600 small">Cover Letter <span class="text-muted fw-normal">(optional)</span></label>
-                <textarea name="cover_letter" class="form-control" rows="5"
+                <label class="form-label fw-600 small">Cover Letter <span class="text-muted fw-normal">(optional, max 5,000 chars)</span></label>
+                <textarea name="cover_letter" class="form-control" rows="5" maxlength="5000"
                   placeholder="Tell the employer why you're interested and what makes you a great candidate..."></textarea>
               </div>
               <button type="submit" class="btn btn-primary w-100 rounded-pill fw-600">

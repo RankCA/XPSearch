@@ -91,7 +91,18 @@
                 </td>
                 <td class="text-muted small d-none d-sm-table-cell"><%= new Date(app.created_at).toLocaleDateString('en-GB') %></td>
                 <td>
-                  <a href="/jobs/<%= app.job_id %>" class="btn btn-outline-primary btn-sm rounded-pill px-3">View</a>
+                  <div class="d-flex gap-1">
+                    <a href="/jobs/<%= app.job_id %>" class="btn btn-outline-primary btn-sm rounded-pill px-3">View</a>
+                    <% if (app.status === 'pending') { %>
+                      <form action="/applications/<%= app.id %>/withdraw" method="POST" class="d-inline"
+                        onsubmit="return confirm('Withdraw this application? This cannot be undone.')">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3" title="Withdraw application">
+                          <i class="bi bi-x-lg"></i>
+                        </button>
+                      </form>
+                    <% } %>
+                  </div>
                 </td>
               </tr>
             <% }); %>

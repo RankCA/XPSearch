@@ -10,6 +10,10 @@ const { requireAuth } = require('./middleware/auth');
 
 const app = express();
 
+// Trust first proxy (Railway, Render, etc.) so that secure cookies,
+// rate-limiting by real client IP, and req.protocol all work correctly.
+app.set('trust proxy', 1);
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -84,7 +88,8 @@ app.use((req, res, next) => {
     id: req.session.userId,
     name: req.session.userName,
     role: req.session.userRole,
-    companyName: req.session.userCompanyName
+    companyName: req.session.userCompanyName,
+    yearGroup: req.session.userYearGroup
   } : null;
   res.locals.flash = req.session.flash || {};
   delete req.session.flash;
@@ -101,10 +106,15 @@ app.get('/about', generalLimiter, (req, res) => {
   res.render('about');
 });
 
+app.get('/privacy', generalLimiter, (req, res) => {
+  res.render('privacy');
+});
+
 app.get('/', generalLimiter, (req, res) => {
   const db = require('./db/database');
   const keyword = req.query.keyword || '';
   const paid = req.query.paid || '';
+  const location = req.query.location || '';
 
   let query = `
     SELECT jobs.*, users.name AS employer_name, users.company_name,
@@ -120,6 +130,10 @@ app.get('/', generalLimiter, (req, res) => {
     query += ` AND (jobs.title LIKE ? OR jobs.description LIKE ? OR users.company_name LIKE ?)`;
     params.push(`%${keyword}%`, `%${keyword}%`, `%${keyword}%`);
   }
+  if (location) {
+    query += ` AND jobs.location LIKE ?`;
+    params.push(`%${location}%`);
+  }
   if (paid === '1') {
     query += ` AND jobs.is_paid = 1`;
   } else if (paid === '0') {
@@ -129,7 +143,7 @@ app.get('/', generalLimiter, (req, res) => {
   query += ` GROUP BY jobs.id ORDER BY jobs.created_at DESC LIMIT 12`;
 
   const jobs = db.prepare(query).all(...params);
-  res.render('index', { jobs, keyword, paid });
+  res.render('index', { jobs, keyword, paid, location });
 });
 
 app.get('/dashboard', generalLimiter, requireAuth, (req, res) => {
